@@ -1,0 +1,48 @@
+# Archivo: docker-compose.yml
+# Propósito: Script de Infraestructura como Código (IaC) para provisionar el entorno
+# de datos. Cumple con el requerimiento de la Sección 3.1 del reto técnico, permitiendo
+# levantar y configurar las dependencias del backend con un solo comando, de forma 
+# aislada, automatizada y reproducible.
+
+services:
+  # Servicio de persistencia principal (Base de datos relacional)
+  postgres:
+    # Se emplea la versión basada en Alpine Linux para minimizar el tamaño de la imagen
+    # y reducir la superficie de ataque.
+    image: postgres:16-alpine
+    container_name: smartbancs-db
+    # La inyección de credenciales y configuración se realiza mediante variables de entorno
+    # referenciadas desde un archivo .env, evitando codificar secretos en el repositorio.
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      # Proceso de Bootstrapping: Monta el script DDL/DML para que el motor de PostgreSQL 
+      # lo ejecute automáticamente en el primer arranque, creando las tablas y datos semilla.
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      # Verificación de disponibilidad estricta. Garantiza que el orquestador sepa exactamente 
+      # cuándo el motor de base de datos está listo para aceptar conexiones, previniendo 
+      # fallos en el arranque del backend por pérdida de conexión.
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Servicio de almacenamiento en memoria clave-valor (Caché y control de concurrencia)
+  redis:
+    image: redis:7-alpine
+    container_name: smartbancs-redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    healthcheck:
+      # Validación de estado mediante un comando de ping nativo. 
+      # Se incluye como base arquitectónica preparada para escalar funcionalidades como 
+      # Rate Limiting (control de tasa hacia el sistema legado Bancs) o mensajería asíncrona.
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
