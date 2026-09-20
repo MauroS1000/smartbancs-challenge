@@ -1,0 +1,6 @@
+transaction_id,source_account,target_account,amount,currency,timestamp,status
+txn-001,acc-001,acc-002,200.00,USD,2026-09-18T10:00:00Z,COMPLETED
+txn-002,,acc-003,150.50,usd,2026-09-18T10:05:00,PENDING
+txn-003,acc-002,acc-001,NULL,USD,18/09/2026,COMPLETED
+txn-004,acc-003,acc-002,-50.00,USD,,FAILED
+txn-005,acc-001,acc-004,300.0,Usd,2026-09-18T11:00:00Z,COMPLETED

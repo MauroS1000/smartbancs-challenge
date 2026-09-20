@@ -1,0 +1,44 @@
+[
+  {
+    "features": {
+      "transaction_id": "txn-001",
+      "source_account": "acc-001",
+      "target_account": "acc-002",
+      "amount_normalized": 200.0,
+      "currency": "USD",
+      "hour_of_day": 10
+    },
+    "metadata": {
+      "original_status": "COMPLETED",
+      "timestamp": "2026-09-18T10:00:00Z"
+    }
+  },
+  {
+    "features": {
+      "transaction_id": "txn-002",
+      "source_account": "UNKNOWN",
+      "target_account": "acc-003",
+      "amount_normalized": 150.5,
+      "currency": "USD",
+      "hour_of_day": 10
+    },
+    "metadata": {
+      "original_status": "PENDING",
+      "timestamp": "2026-09-18T10:05:00Z"
+    }
+  },
+  {
+    "features": {
+      "transaction_id": "txn-005",
+      "source_account": "acc-001",
+      "target_account": "acc-004",
+      "amount_normalized": 300.0,
+      "currency": "USD",
+      "hour_of_day": 11
+    },
+    "metadata": {
+      "original_status": "COMPLETED",
+      "timestamp": "2026-09-18T11:00:00Z"
+    }
+  }
+]
