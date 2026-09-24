@@ -1,4 +1,4 @@
-```
+
 # SmartBancs App - MVP Backend
 
 ## Instrucciones de Ejecución
