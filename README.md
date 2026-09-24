@@ -1,3 +1,4 @@
+```
 # SmartBancs App - MVP Backend
 
 ## Instrucciones de Ejecución
@@ -34,6 +35,50 @@ make etl
 make down
 ```
 
+## Pruebas de la API
+
+Para verificar el funcionamiento del microservicio, ejecute los siguientes comandos en una nueva terminal mientras el servidor se encuentra en ejecución:
+
+**Escenario 1: Transacción exitosa**
+```bash
+curl -X POST http://localhost:8080/api/v1/transferencias \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cuenta_origen": "1000001234",
+    "cuenta_destino": "2000009876",
+    "monto": 250.50,
+    "moneda": "USD"
+  }'
+```
+*Resultado esperado: HTTP 200 OK. La transferencia se procesa y se dispara la evaluación de IA de forma asíncrona.*
+
+**Escenario 2: Error por fondos insuficientes**
+```bash
+curl -X POST http://localhost:8080/api/v1/transferencias \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cuenta_origen": "1000001234",
+    "cuenta_destino": "2000009876",
+    "monto": 999999.00,
+    "moneda": "USD"
+  }'
+```
+*Resultado esperado: HTTP 400 Bad Request o HTTP 422 Unprocessable Entity. El sistema rechaza la transacción protegiendo la consistencia de la base de datos.*
+
+**Escenario 3: Error por formato inválido (cuenta faltante)**
+```bash
+curl -X POST http://localhost:8080/api/v1/transferencias \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cuenta_destino": "2000009876",
+    "monto": 100.00,
+    "moneda": "USD"
+  }'
+```
+*Resultado esperado: HTTP 400 Bad Request. El middleware de validación rechaza la petición antes de interactuar con la base de datos.*
+
 ## Evidencias
 
-* **Video Demostrativo:** [https://youtu.be/qIKL8xEzvUs]
+* **Video Demostrativo:** [[https://youtu.be/qIKL8xEzvUs](https://youtu.be/qIKL8xEzvUs)]
+
+```
