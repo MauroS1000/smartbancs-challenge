@@ -3,36 +3,33 @@
 
 ## Instrucciones de Ejecución
 
-Este proyecto incluye un `Makefile` en la raíz del repositorio para estandarizar y simplificar el despliegue del entorno en cualquier sistema operativo.
-
 ### Prerrequisitos
 * Docker y Docker Compose
 * Go 1.20 o superior
 * Python 3.x
-* Make (GNU Make)
 
 ### Pasos operativos
 
 **1. Desplegar la infraestructura (PostgreSQL y Redis)**
 ```bash
-make up
+docker compose up -d
 ```
 
 **2. Iniciar el microservicio backend**
 ```bash
-make run
+cd backend && go run cmd/api/main.go
 ```
 *El servidor inyectará automáticamente las variables de entorno locales y escuchará en el puerto 8080.*
 
 **3. Ejecutar el pipeline de transformación de datos (ETL)**
 ```bash
-make etl
+python3 etl.py
 ```
 *El script procesará los registros heredados y generará el archivo `ai_ready_transactions.json` en el directorio de datos.*
 
 **4. Detener y limpiar el entorno**
 ```bash
-make down
+docker compose down
 ```
 
 ## Pruebas de la API
@@ -79,6 +76,4 @@ curl -X POST http://localhost:8080/api/v1/transferencias \
 
 ## Evidencias
 
-* **Video Demostrativo:** [[https://youtu.be/qIKL8xEzvUs](https://youtu.be/qIKL8xEzvUs)]
-
-```
+* **Video Demostrativo:** [https://youtu.be/qIKL8xEzvUs]
