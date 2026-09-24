@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defensa Técnica - SmartBancs MVP</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --title-color: #58a6ff;
+            --highlight-bg: #1f242c;
+            --code-color: #ff7b72;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100%;
+            /* Scroll Snap para comportamiento de presentación */
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+        }
+
+        .nav-hint {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #484f58;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .slide {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            scroll-snap-align: start;
+            box-sizing: border-box;
+            padding: 40px;
+        }
+
+        .content {
+            max-width: 1200px;
+            width: 100%;
+            background-color: var(--card-bg);
+            padding: 60px 80px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #30363d;
+        }
+
+        h1 {
+            color: var(--title-color);
+            font-size: 3.5rem;
+            margin-top: 0;
+            border-bottom: 2px solid #30363d;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        ul {
+            font-size: 2rem;
+            line-height: 1.6;
+            padding-left: 40px;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 25px;
+        }
+
+        strong {
+            color: #ffffff;
+        }
+
+        .highlight {
+            background-color: var(--highlight-bg);
+            padding: 30px;
+            border-left: 8px solid var(--title-color);
+            margin-top: 40px;
+            border-radius: 6px;
+            font-size: 1.8rem;
+        }
+
+        code {
+            background-color: rgba(110, 118, 129, 0.4);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            color: var(--code-color);
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-hint">↓ Desliza o usa las flechas para navegar ↓</div>
+
+    <!-- Diapositiva 1 -->
+    <div class="slide">
+        <div class="content">
+            <h1>1. Arquitectura y Stack Tecnológico</h1>
+            <ul>
+                <li><strong>Go (Golang):</strong> Seleccionado por su eficiencia en concurrencia (goroutines) para manejar picos transaccionales sin agotar hilos del sistema, garantizando latencias menores a 2 segundos.</li>
+                <li><strong>PostgreSQL:</strong> Base de datos relacional robusta que garantiza el cumplimiento ACID. Utiliza bloqueos a nivel de fila (<code>SELECT ... FOR UPDATE</code>) para prevenir condiciones de carrera.</li>
+                <li><strong>IA Asíncrona:</strong> La evaluación de riesgo se ejecuta en un proceso no bloqueante, evitando penalizar el tiempo de respuesta.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Diapositiva 2 -->
+    <div class="slide">
+        <div class="content">
+            <h1>2. Sincronización y Protección del Core</h1>
+            <ul>
+                <li><strong>El problema:</strong> El core legado Bancs se degrada ante altas ráfagas de consultas directas (10 000 TPS).</li>
+                <li><strong>La solución (Patrón Outbox):</strong> El microservicio asume la carga inmediata. Los saldos se sincronizan hacia Bancs de forma asíncrona mediante un consumidor con limitación de tasa.</li>
+                <li><strong>Beneficio:</strong> Garantiza la resiliencia del sistema heredado procesando las actualizaciones a un ritmo predecible y controlado.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Diapositiva 3 -->
+    <div class="slide">
+        <div class="content">
+            <h1>3. Incidente de Operaciones: Deadlocks</h1>
+            <ul>
+                <li><strong>Síntomas:</strong> Latencia severa y errores de timeout reportados durante el pico de quincena.</li>
+                <li><strong>Mitigación Inmediata:</strong> Identificación y terminación forzada (kill) de las conexiones bloqueantes en la base de datos para restablecer el flujo.</li>
+                <li><strong>Estabilización:</strong> Aplicación de limitación de tasa a nivel de red para reducir la concurrencia masiva.</li>
+            </ul>
+            <div class="highlight">
+                <strong>Observabilidad:</strong> El uso de <code>Correlation IDs</code> inyectados en los logs permite trazar la transacción afectada e identificar la latencia en la capa de datos.
+            </div>
+        </div>
+    </div>
+
+    <!-- Diapositiva 4 -->
+    <div class="slide">
+        <div class="content">
+            <h1>4. Calidad de Datos (Pipeline ETL)</h1>
+            <ul>
+                <li><strong>Objetivo:</strong> Preparar los registros históricos del sistema Bancs para el modelo de IA.</li>
+                <li><strong>Transformación:</strong> El script en Python realiza la limpieza de valores nulos y estandariza formatos.</li>
+                <li><strong>Impacto:</strong> Mitiga el <em>Data Drift</em> estableciendo una estructura JSON limpia, fundamental para el monitoreo y el reentrenamiento del modelo predictivo.</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>
